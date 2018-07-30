@@ -1,0 +1,25 @@
+.clearfix {
+	clear: both;
+}
+
+
+.ui.menu .ui.dropdown .menu.custom.half.width.items>.item {
+	float: left;
+	width: 50%;
+	text-align: center;
+}
+.ui.menu .ui.dropdown .menu.custom.half.width.items>.item .icon:not(.dropdown) {
+	margin: 0px;
+}
+.ui.dropdown .menu.custom.half.width.items>.divider {
+    border-top: none;
+    border-bottom: 1px solid rgba(34,36,38,.1);
+    padding: 0 0 .5em 0;
+}
+
+.category.search {
+	cursor: text;
+}
+.category.search input {
+	border-radius: 0px !important;
+}

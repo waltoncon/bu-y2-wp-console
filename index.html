@@ -1,0 +1,509 @@
+<html>
+
+<head>
+	<title>Stock Console</title>
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles/main.css">
+	<link rel="stylesheet" href="styles/print.css" media="print">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.css">
+</head>
+
+<body>
+
+<!-- 	MAIN CONTENT -->
+	<div class="ui twelve column container">
+
+<!-- 		HEADER -->
+		<div class="ui text menu">
+			<a class="item" href="/console">
+				<img src="images/suso.png">
+				<div class="item">SUSO</div>
+			</a>
+			<div class="ui right item">
+				<span class="item">John Smith | 123456789</span> 
+				<a class="ui item">
+					<i class="user icon"></i>
+				</a>
+				<a class="ui item">
+					<i class="log out icon"></i>
+				</a>
+			</div>
+		</div>
+		
+<!-- 		TOOLBAR -->
+		<div class="ui top attached menu">
+			<div class="menu">
+				<div class="ui dropdown icon item borderless">
+					<i class="content icon"></i>
+					<div class="menu">
+						<div class="item" data-action="product_new">New Product</div>
+						<div class="divider"></div>
+						<div class="item" data-action="view_list">List View</div>
+						<div class="item" data-action="view_table">Table View</div>
+						<div class="divider"></div>
+						<div class="header">Export current view</div>
+						<div class="item" data-action="export_print">Print</div>
+						<div class="divider"></div>
+						<div class="item" data-action="help">Help</div>
+<!-- 						<div class="item" data-action="setting">Settings</div> -->
+					</div>
+				</div>
+				<div class="ui dropdown icon item ">
+					<i class="sort icon"></i>
+					<div class="menu custom half width items">
+						<div class="header clearfix">
+							Alphabetical
+						</div>
+						<div class="item" data-action="sort" data-sortby="name" data-sortdirection="asc">
+							<i class="sort alphabet ascending icon"></i>
+						</div>
+						<div class="item" data-action="sort" data-sortby="name" data-sortdirection="desc">
+							<i class="sort alphabet descending icon"></i>
+						</div>
+						<div class="divider clearfix"></div>
+						<div class="header clearfix">
+							Date Created
+						</div>
+						<div class="item" data-action="sort" data-sortby="created_at" data-sortdirection="asc">
+							<i class="sort content ascending icon"></i>
+						</div>
+						<div class="item" data-action="sort" data-sortby="created_at" data-sortdirection="desc">
+							<i class="sort content descending icon"></i>
+						</div>
+						<div class="divider clearfix"></div>
+						<div class="header clearfix">
+							Last Modified
+						</div>
+						<div class="item" data-action="sort" data-sortby="modified_at" data-sortdirection="asc">
+							<i class="sort content ascending icon"></i>
+						</div>
+						<div class="item" data-action="sort" data-sortby="modified_at" data-sortdirection="desc">
+							<i class="sort content descending icon"></i>
+						</div>
+						<div class="divider clearfix"></div>
+						<div class="header clearfix">
+							Stock
+						</div>
+						<div class="item" data-action="sort" data-sortby="stock_level" data-sortdirection="asc">
+							<i class="sort content ascending icon"></i>
+						</div>
+						<div class="item" data-action="sort" data-sortby="stock_level" data-sortdirection="desc">
+							<i class="sort content descending icon"></i>
+						</div>
+						<div class="divider clearfix"></div>
+						<div class="header clearfix">
+							Price
+						</div>
+						<div class="item" data-action="sort" data-sortby="price" data-sortdirection="asc">
+							<i class="sort content ascending icon"></i>
+						</div>
+						<div class="item" data-action="sort" data-sortby="price" data-sortdirection="desc">
+							<i class="sort content descending icon"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="menu" data-menufor="select">
+				<div class="ui link icon item borderless" data-action="multiselect-all">
+					<i class="check circle outline icon"></i>
+				</div>
+				<div class="ui link icon item borderless" data-action="multiselect-none">
+					<i class="radio icon"></i>
+				</div>
+				<div class="ui link icon item borderless" data-action="multiselect-clear">
+					<i class="remove circle outline icon"></i>
+				</div>
+				<div class="ui link icon item borderless" data-action="multiselect-delete">
+					<i class="trash icon"></i>
+				</div>
+				<div class="ui item" id="select_counter"></div>
+			</div>
+			<div class="right menu">
+<!-- 				Counter of current view -->
+				<div class="ui item" data-from="1" data-to="1" data-of="1" id="counter"></div>
+<!-- 				Go to previous page -->
+				<div class="ui link icon item borderless" data-action="page-prev">
+					<i class="angle left icon"></i>
+				</div>
+<!-- 				Go to next page  -->
+				<div class="ui link icon item borderless" data-action="page-next">
+					<i class="angle right icon"></i>
+				</div>
+<!-- 				Refresh current view -->
+				<div class="ui link icon item borderless" data-action="refresh">
+					<i class="refresh icon"></i>
+				</div>
+<!-- 				Search database -->
+				<div class="ui right aligned category search item">
+					<form class="ui transparent icon input" id="search_form">
+						<input class="prompt" type="text" placeholder="Search products..." id="search_form_input" autocomplete="off">
+						<i class="search link icon" id="search_icon_search"></i>
+						<i class="close link icon" id="search_icon_close" style="display: none;"></i>
+					</form>
+					<div class="results"></div>
+				</div>
+			</div>
+		</div>
+		
+<!-- 		PRODUCT CONTAINER -->
+		<div class="ui bottom attached segment" id="clothing_container">
+		</div>
+	</div>
+
+<!-- 	ITEM DETAILS / EDIT MODAL -->
+	<div class="ui modal" id="edit_product_modal">
+		<div class="header" data-modaldata="name">
+		</div>
+		<div class="image content">
+			<div class="ui medium image">
+				<img src="" data-modaldata="item_image">
+			</div>
+			<div class="description" style="width: 100%;">
+				<form class="ui form" action="edit" method="post" id="edit_product_form">
+					<input type="hidden" name="uuid" data-modalvalue="id">
+					<div class="fields">
+						<div class="twelve wide field">
+							<label>Name</label>
+							<div class="field">
+								<input type="text" name="name" data-modalvalue="name" value="" placeholder="Name">
+							</div>
+						</div>
+						<div class="four wide field">
+							<label>Type</label>
+						  	<select class="ui fluid search dropdown" name="type" data-modalvalue="type">
+								<option value="">Type</option>
+								<option value="accessory">Accessory</option>
+								<option value="clothing">Clothing</option>
+						  	</select>
+						</div>
+					</div>
+					<div class="fields">
+						<div class="three wide field">
+							<label>Stock Level</label>
+							<input type="text" name="stock_level" data-modalvalue="stock_level" placeholder="Stock Level">
+						</div>
+						<div class="four wide field">
+							<label>Price</label>
+							<div class="ui labeled input">
+								<div class="ui label">£</div>
+								<input type="text" name="price" data-modalvalue="price" placeholder="Price">
+							</div>
+						</div>
+						<div class="nine wide field">
+							<label>Style</label>
+							<input type="text" name="style" data-modalvalue="style" placeholder="Style">
+						</div>
+					</div>
+					<div class="field">
+						<label>Description</label>
+						<textarea data-modalvalue="description" name="description" placeholder="Description"></textarea>
+					</div>
+					<div class="fields">
+						<div class="four wide field">
+							<label>Delete</label>
+							<div data-action="delete_product" class="btn-action ui red inverted deny button fluid">
+								Delete
+							</div>
+						</div>
+						<div class="six wide field">
+							<label>Created</label>
+							<input placeholder="Read Only" readonly="" type="text" value="" data-modalvalue="created_at">
+						</div>
+						<div class="six wide field">
+							<label>Last Modified</label>
+							<input placeholder="Read Only" readonly="" type="text" value="" data-modalvalue="modified_at">
+						</div>
+					</div>
+				</form>
+
+			</div>
+		</div>
+		<div class="actions">
+			<span data-modaldata="id"></span>
+			<div data-cancelform="edit_product" class="btn-action ui black deny button">
+				Cancel
+			</div>
+			<div data-submitform="edit_product" class="ui positive right labeled icon button">
+				Edit
+				<i class="checkmark icon"></i>
+			</div>
+		</div>
+	</div>
+	
+<!-- 	ADD PRODUCT MODAL -->
+	<div class="ui small modal" id="add_product_modal">
+		<div class="header">
+			Add Item
+		</div>
+		<div class="content">
+			<div class="description" style="width: 100%;">
+				<form class="ui form" action="edit" method="post" id="add_product_form">
+					<div class="two fields">
+						<div class="twelve wide field">
+							<label>Name</label>
+							<div class="field">
+								<input type="text" name="name" data-modalvalue="name" value="" placeholder="Name">
+							</div>
+						</div>
+						<div class="four wide field">
+							<label>Type</label>
+						  	<select class="ui fluid search dropdown" name="type" data-modalvalue="type">
+								<option value="">Type</option>
+								<option value="accessory">Accessory</option>
+								<option value="clothing">Clothing</option>
+						  	</select>
+						</div>
+					</div>
+					<div class="fields">
+						<div class="three wide field">
+							<label>Stock Level</label>
+							<input type="number" min="0" step="1" name="stock_level" data-modalvalue="stock_level" placeholder="Stock Level" pattern="/\b\d{1,3}(?:,?\d{3})*(?:\.\d{2})?\b/">
+						</div>
+						<div class="four wide field">
+							<label>Price</label>
+							<div class="ui labeled input">
+								<div class="ui label">£</div>
+								<input type="number" name="price" data-modalvalue="price" placeholder="Price" min="0.00" step="0.01">
+							</div>
+						</div>
+						<div class="nine wide field">
+							<label>Style</label>
+							<input type="text" name="style" data-modalvalue="style" placeholder="Style">
+						</div>
+					</div>
+					<div class="field">
+						<label>Description</label>
+						<textarea data-modalvalue="description" name="description" placeholder="Description"></textarea>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="actions">
+			<div data-cancelform="add_product" class="ui black deny button" >Cancel</div>
+			<div data-submitform="add_product" class="ui positive right labeled icon button">Add <i class="checkmark icon"></i></div>
+		</div>
+	</div>
+
+<!-- 	SINGLE DELETE WARNING -->
+	<div class="ui small basic modal" id="delete_product_modal">
+		<div class="ui icon header">
+			<i class="trash icon"></i> Delete selected products?
+		</div>
+		<div class="content">
+			<form action="delete" method="edit" id="delete_product_form">
+				<input type="hidden" data-modalvalue="id" name="id" value="">
+			</form>
+			<p>You are about to delete <span data-modaldata="name"></span> permanently</p>
+		</div>
+		<div class="actions">
+			<div data-cancelform="delete_product" class="ui basic cancel inverted button">
+				Cancel
+			</div>
+			<div data-submitform="delete_product" class="ui red ok inverted button">
+				Delete
+			</div>
+		</div>
+	</div>
+
+<!-- 	MULTIPLE DELETE WARNING -->
+	<div class="ui small basic modal" id="multiselect_delete_warning_modal">
+		<div class="ui icon header">
+			<i class="trash icon"></i> Delete selected products?
+		</div>
+		<div class="content">
+			<p>You are about to delete <span class="value_multiselect"></span> products permanently</p>
+		</div>
+		<div class="actions">
+			<div class="btn-action ui basic cancel inverted button">
+				No
+			</div>
+			<div class="ui red ok inverted button" data-action="batch_delete">
+				Delete
+			</div>
+		</div>
+	</div>
+	
+<!-- 	HELP MODAL -->
+	<div class="ui small modal" id="help_modal">
+		<div class="header">
+			Help
+		</div>
+		<div class="content">
+			<div class="description" style="width: 100%;">
+				<h2 class="ui header">Menus</h1>
+				<div class="ui menu">
+					<div class="item">
+						General
+					</div>
+					<div class="right menu">
+						<div class="ui dropdown icon item borderless">
+							<i class="content icon"></i>
+						</div>
+						<div class="ui dropdown icon item borderless">
+							<i class="sort icon"></i>
+						</div>
+					</div>
+				</div>
+				<div class="ui list">
+					<div class="item">
+						<i class="content icon"></i>
+						<div class="content">
+							<div class="header">Menu</div>
+							<div class="description">Contains buttons to add new products, change the view between list and table and print the current view. Also contains buttons to open the Help and Settings.</div>
+						</div>
+					</div>
+					<div class="item">
+						<i class="sort icon"></i>
+						<div class="content">
+							<div class="header">Sort</div>
+							<div class="description">Sorts the view by one of the listed methods, is maintained while searching, changing pages and refreshing.</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="ui divider"></div>
+				
+				<div class="ui menu">
+					<div class="item">
+						Selection
+					</div>
+					<div class="right menu">
+						<div class="ui link icon item borderless">
+							<i class="check circle outline icon"></i>
+						</div>
+						<div class="ui link icon item borderless">
+							<i class="radio icon"></i>
+						</div>
+						<div class="ui link icon item borderless">
+							<i class="remove circle outline icon"></i>
+						</div>
+						<div class="ui link icon item borderless">
+							<i class="trash icon"></i>
+						</div>
+					</div>
+				</div>
+				<div>This is only available in the table view</div>
+				<div class="ui list">
+					<div class="item">
+						<i class="check circle outline icon"></i>
+						<div class="content">
+							<div class="header">Select all on current page</div>
+							<div class="description">Selects all of the products on the current page, selected products persist across pages.</div>
+						</div>
+					</div>
+					<div class="item">
+						<i class="radio icon"></i>
+						<div class="content">
+							<div class="header">Deselect all on current page</div>
+							<div class="description">Deslects all of the products on the current page, this does not clear the entire list of selected products.</div>
+						</div>
+					</div>
+					<div class="item">
+						<i class="remove circle outline icon"></i>
+						<div class="content">
+							<div class="header">Deselect all products</div>
+							<div class="description">Deselects all selected products across all pages.</div>
+						</div>
+					</div>
+					<div class="item">
+						<i class="trash icon"></i>
+						<div class="content">
+							<div class="header">Delete selected products</div>
+							<div class="description">Deletes all of the selected products, including those on other pages. A popup asks for confirmation. This action is permentant.</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="ui divider"></div>
+				
+				<div class="ui menu">
+					<div class="item">
+						Pagination
+					</div>
+					<div class="right menu">
+						<div class="ui link icon item borderless">
+							<i class="angle left icon"></i>
+						</div>
+						<div class="ui link icon item borderless">
+							<i class="angle right icon"></i>
+						</div>
+						<div class="ui link icon item borderless">
+							<i class="refresh icon"></i>
+						</div>
+					</div>
+				</div>
+				<div class="ui list">
+					<div class="item">
+						<i class="angle left icon"></i>
+						<div class="content">
+							<div class="header">Previous page</div>
+							<div class="description">Takes you to the previous page.</div>
+						</div>
+					</div>
+					<div class="item">
+						<i class="angle right icon"></i>
+						<div class="content">
+							<div class="header">Next page</div>
+							<div class="description">Takes you to the next page.</div>
+						</div>
+					</div>
+					<div class="item">
+						<i class="refresh icon"></i>
+						<div class="content">
+							<div class="header">Refresh</div>
+							<div class="description">Refreshes the current page.</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="ui divider"></div>
+				
+				<h2 class="ui header">Editing products</h2>
+				<div>
+					To edit a product, click on the item in the list or table view and change any of the values displayed in the details panel then click edit
+				</div>
+				
+				
+			</div>
+		</div>
+		<div class="actions">
+			<div class="btn-action ui black deny button" >Close</div>
+		</div>
+	</div>
+	
+<!-- 	SETTING MODAL -->
+<!-- 	<div class="ui small modal" id="settings_modal">
+		<div class="header">
+			Setting
+		</div>
+		<div class="content">
+			<div class="description" style="width: 100%;">
+				
+				<form action="">
+					<div class="field">
+						<div class="ui toggle checkbox" data-action="settings_dark_theme">
+							<input type="checkbox" name="settings_dark_theme">
+							<label>Dark theme</label>
+						</div>
+					</div>
+				</form>
+				
+			</div>
+		</div>
+		<div class="actions">
+			<div data-cancelform="add_product" class="btn-action ui black deny button" >Cancel</div>
+			<div data-submitform="add_product" class="ui positive right labeled icon button">Save <i class="checkmark icon"></i></div>
+		</div>
+	</div> -->
+
+<!-- 	INCLUDED JS -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.js"></script>
+	<script src="js/plugins.js"></script>
+	<script src="js/main.js"></script>
+</body>
+
+</html>

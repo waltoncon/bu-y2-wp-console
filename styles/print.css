@@ -1,0 +1,25 @@
+.ui.dropdown.icon.item,
+.ui.right.aligned.category.search.item, 
+.ui.link.icon.item,
+.menu,
+.ui.checkbox,
+th:first-child,
+td:first-child {
+	display: none !important;
+}
+
+.ui.top.attached.menu {
+	border: none !important;
+}
+
+.ui.menu .item:before {
+	display: none;
+}
+
+.ui.divided.link.items .item {
+	page-break-inside: avoid;
+}
+
+table {
+	white-space: initial !important;
+}
